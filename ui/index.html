@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="css/bootstrap.min.css"type="text/css" media="screen" />
 <link rel="stylesheet" href="css/bootstrap-theme.min.css"type="text/css" media="screen" />
 <link rel="stylesheet" href="css/app.css"type="text/css" media="screen" />
+<link rel="stylesheet" href="css/graphs.css"type="text/css" media="screen" />
 <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/knockout/2.3.0/knockout-min.js"></script>
@@ -134,7 +135,7 @@ body { padding: 8px; }
 
   <!-- **************** footer ******************* -->
   <script>
-    var patview = new pat.view( new pat.experimentList(), pat.experiment(800) )
+    var patview = new pat.view( new pat.experimentList(), pat.experiment(800) );
     var barchart = new d3.custom.barchart(document.getElementById("graph"), patview.data);
     ko.applyBindings(patview);
   </script>
