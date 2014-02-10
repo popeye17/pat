@@ -137,3 +137,22 @@ pat.view = function(experimentList, experiment) {
   $(document).ready(function() { self.onHashChange(window.location.hash) })
   $(window).on('hashchange', function() { self.onHashChange(window.location.hash) })
 }
+
+var d3Chart = "d3_workload_container";
+function contentOut() {
+  e = document.getElementById(d3Chart);
+  e.style.position = "absolute";
+  e.className = "slide_content contentOut";
+  //if ($.browser.msie) $(e).css('display','none');
+}
+function contentIn(id) {
+console.log("w1: " +  $("#" + id).width() );
+  document.getElementById(id).style.display="inherit";
+  document.getElementById(id).style.position = "relative";
+  document.getElementById("graph").appendChild(document.getElementById(id));
+  e = document.getElementById(id);
+  e.className = "slide_content contentIn";
+  d3Chart = id;
+}
+//contentIn(d3Chart);
+//

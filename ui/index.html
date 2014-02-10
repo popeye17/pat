@@ -11,6 +11,7 @@
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/knockout/2.3.0/knockout-min.js"></script>
 <script src="/ui/js/chart.js"></script>
 <script src="/ui/js/bar.js"></script>
+<script src="/ui/js/throughput.js"></script>
 <script type="text/javascript" src="js/app.js"></script>
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
 <title>Cloud Foundry Performance Suite</title>
@@ -29,8 +30,7 @@ body { padding: 8px; }
 <div class="container">
   <div class="header row">
     <h1>Performance Acceptance Tests <small>v0.1</small></h1>
-  </div>
-
+  </div>  
   <div class="row">
   </div>
 
@@ -39,6 +39,17 @@ body { padding: 8px; }
       Experiment Results
     </div>
     <div id="graph" class="panel-body col-md-12 center-block" data-bind="chart: data">
+      <div class="btn-group-vertical" style="position:absolute; right:-62px; top: 0px;">
+        <button type="button" onclick="contentOut(); contentIn('d3_workload_container');" class="btn btn-default btn-lg">
+          <span class="glyphicon"><img src="images/glyphicons_bars.png" /></span>
+        </button>
+        <button type="button" onclick="contentOut(); contentIn('d3_throughput_container');" class="btn btn-default btn-lg">
+          <span class="glyphicon"><img src="images/glyphicons_lines.png" /></span>
+        </button>
+        <button type="button" onclick="alert('feature coming soon');" class="btn btn-default btn-lg">
+          <span class="glyphicon"><img src="images/glyphicons_pie.png" /></span>
+        </button>
+      </div>
       <p data-bind="visible: noExperimentRunning" class="noexperimentrunning text-muted text-center" style="position: relative; top: 20%">(No Experiment Running)</p>
     </div>
     <div style="border-top: 2px solid #ddd">
@@ -137,7 +148,8 @@ body { padding: 8px; }
   <script>
     var patview = new pat.view( new pat.experimentList(), pat.experiment(800) );
     var barchart = new d3.custom.barchart(document.getElementById("graph"), patview.data);
-    ko.applyBindings(patview);
+    var throughput =new d3.custom.throughput(document.getElementById("graph"), patview.data);
+    ko.applyBindings(patview);    
   </script>
 </div>
 </body>

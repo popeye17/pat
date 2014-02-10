@@ -105,15 +105,19 @@ describe("Throughput chart", function() {
 
 describe("Bar chart", function() {
   const sec = 1000000000;
+  const gap = 1;
+  const chartAreaId = "d3_workload_graph_box";
   var barchart;
   var data = ko.observableArray();
 
   beforeEach(function() {
+    $("#target").html("");
     data.removeAll();
     barchart = new d3.custom.barchart(document.getElementById("target"), data);
-  })
+  });
 
   it("should draw a bar for each element", function() {  
+    
     var svg = d3.select("#d3_workload");    
 
     for (var i = 0; i < 3; i ++) {
@@ -121,14 +125,6 @@ describe("Bar chart", function() {
     }    
     expect(svg.selectAll('rect.bar').size()).toBe(3);
   });
-
-  it("should scale and show >10 tasks in the x-axis if >10 tasks has been performed", function() {        
-    for (var i = 0; i < 15; i ++) {
-        data.push( {"LastResult" : 1 * sec} );
-    }    
-    expect( barchart.xAxis_max() ).toBe(15);
-  });
-
 
   it("should show the maximum LastResult in seconds in the y-axis", function() {
      var LastResult = 0;
@@ -138,8 +134,63 @@ describe("Bar chart", function() {
       data.push( {"LastResult" : LastResult} );
     }    
     expect( barchart.yAxis_max() ).toBe(10);
+  });    
+    
+  it("should auto-pan to the left when new data is drawn outside of the viewable area", function() {
+    var barWidth = barchart.bar_width();
+    var viewableWidth = barchart.draw_box_width();
+    
+    var max_data = parseInt(viewableWidth / (barWidth + gap));    
+    
+    for (var i = 1; i <= max_data; i ++) {
+      data.push( {"LastResult" : 5} );
+    }    
+    
+    waits(500);
+    runs(function () {
+      expect(parseInt(getTranslateX(d3.select('#' + chartAreaId)))).toBe(0);         
+    }, 500);
+
+    var extra_data = 5;
+    waits(50);
+    runs(function(){
+      for (var i = 1; i <= extra_data; i ++) {
+        data.push( {"LastResult" : 5} );
+      }
+    }, 50);
+    
+    waits(500);    
+    runs(function() {
+      expect(parseInt(getTranslateX(d3.select('#' + chartAreaId)))).toBeLessThan(-1 * extra_data * (barWidth + gap));  
+    });
   });
 
+  it("should auto-pan back into view if the chart is panned out of the viewable area", function() {
+    var barWidth = barchart.bar_width();
+    var viewableWidth = barchart.draw_box_width();
+    
+    var interval = setInterval(function() {
+      data.push( {"LastResult" : 5} );
+    }, 80);
+  
+    waits(500);
+    runs(function(){
+      d3.select('#' + chartAreaId)
+        .attr("transform","translate(" + (viewableWidth * 2) + ", 0)");
+    }, 500);
+      
+    waits(1000);
+    runs(function () {
+      expect(parseInt(getTranslateX(d3.select('#' + chartAreaId)))).toBeLessThan( viewableWidth );         
+      clearInterval(interval);
+    }, 1000);
+  });
+
+  function getTranslateX(node) {    
+    var splitted = node.attr("transform").split(",");  
+    return parseInt(splitted [0].split("(")[1]);
+  };
+  
 });
 
 describe("The experiment list", function() {
