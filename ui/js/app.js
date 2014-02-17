@@ -88,7 +88,8 @@ pat.experimentList = function() {
 ko.bindingHandlers.chart = {
   c: {},
   init: function(element, valueAccessor) {
-    ko.bindingHandlers.chart.b = d3.custom.barchart(element);
+    ko.bindingHandlers.chart.b = new barchart(element);
+    ko.bindingHandlers.chart.t = new throughput(element);
   },
   update: function(element, valueAccessor) {
     var data = ko.unwrap(valueAccessor())
@@ -97,7 +98,8 @@ ko.bindingHandlers.chart = {
         if (k == "Average" || k == "WallTime" || k == "LastResult" || k == "TotalTime") obj[k + '_fmt'] = (obj[k] / 1000000000).toFixed(2) + " sec";
       }
     });
-    ko.bindingHandlers.chart.b(data)
+    ko.bindingHandlers.chart.b(data);    
+    ko.bindingHandlers.chart.t(data);    
   }
 }
 
@@ -143,3 +145,4 @@ pat.view = function(experimentList, experiment) {
   $(document).ready(function() { self.onHashChange(window.location.hash) })
   $(window).on('hashchange', function() { self.onHashChange(window.location.hash) })
 }
+
